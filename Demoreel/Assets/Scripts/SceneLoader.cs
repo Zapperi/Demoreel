@@ -10,7 +10,7 @@ public class SceneLoader : MonoBehaviour
     public Animator sceneLoaderAnimator;
     [SerializeField]
     private float m_transistionTime;
-    private int transistionCount = 2;
+    public int transistionCount = 3;
 
     public void Start()
     {
@@ -22,9 +22,6 @@ public class SceneLoader : MonoBehaviour
             {
                 DestroyImmediate(gameObject);
             }
-
-
-        sceneLoaderAnimator.SetTrigger("StartScene1");
     }
 
     public void LoadTestScene()
@@ -32,14 +29,28 @@ public class SceneLoader : MonoBehaviour
         StartCoroutine(LoadScene("TestScene_1"));
     }
 
+    public void UnloadSceneByIndex(int buildIndex)
+    {
+        StartCoroutine(UnloadScene(buildIndex));
+    }
+
     private IEnumerator LoadScene(string sceneName)
     {
-        //int transistionNumer = Random.Range(1, transistionCount);
-        int transistionNumer = 2;
-        sceneLoaderAnimator.SetTrigger("EndScene"+ transistionNumer);
+        int transistionNumber = Random.Range(1, transistionCount);
+        sceneLoaderAnimator.SetTrigger("EndScene"+ transistionNumber);
         yield return new WaitForSeconds(m_transistionTime);
         MainMenuController.Instance.HideMainMenu();
         SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
-        sceneLoaderAnimator.SetTrigger("StartScene"+ transistionNumer);
-    } 
+        sceneLoaderAnimator.SetTrigger("StartScene"+ transistionNumber);
+    }
+
+    private IEnumerator UnloadScene(int buildIndex)
+    {
+        int transistionNumer = Random.Range(1, transistionCount);
+        sceneLoaderAnimator.SetTrigger("EndScene" + transistionNumer);
+        yield return new WaitForSeconds(m_transistionTime);
+        MainMenuController.Instance.ShowMainMenu();
+        SceneManager.UnloadSceneAsync(buildIndex);
+        sceneLoaderAnimator.SetTrigger("StartScene" + transistionNumer);
+    }
 }

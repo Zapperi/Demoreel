@@ -28,4 +28,9 @@ public class MainMenuController : MonoBehaviour
     {
         mainMenuCanvas.gameObject.SetActive(false);
     }
+
+    public void ShowMainMenu()
+    {
+        mainMenuCanvas.gameObject.SetActive(true);
+    }
 }

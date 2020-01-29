@@ -8,9 +8,13 @@ public class SceneLoader : MonoBehaviour
 {
     public static SceneLoader Instance;
     public Animator sceneLoaderAnimator;
+    public int transistionCount = 3;
+    public bool forceMode;
+    public int forcedTransistion = 1;
+
     [SerializeField]
     private float m_transistionTime;
-    public int transistionCount = 3;
+
 
     public void Start()
     {
@@ -36,7 +40,15 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator LoadScene(string sceneName)
     {
-        int transistionNumber = Random.Range(1, transistionCount);
+        int transistionNumber;
+        if (forceMode)
+        {
+            transistionNumber = forcedTransistion;
+        }
+        else
+        {
+            transistionNumber = Random.Range(1, transistionCount);
+        }
         sceneLoaderAnimator.SetTrigger("EndScene"+ transistionNumber);
         yield return new WaitForSeconds(m_transistionTime);
         MainMenuController.Instance.HideMainMenu();
@@ -46,11 +58,19 @@ public class SceneLoader : MonoBehaviour
 
     private IEnumerator UnloadScene(int buildIndex)
     {
-        int transistionNumer = Random.Range(1, transistionCount);
-        sceneLoaderAnimator.SetTrigger("EndScene" + transistionNumer);
+        int transistionNumber;
+        if (forceMode)
+        {
+            transistionNumber = forcedTransistion;
+        }
+        else
+        {
+            transistionNumber = Random.Range(1, transistionCount);
+        }
+        sceneLoaderAnimator.SetTrigger("EndScene" + transistionNumber);
         yield return new WaitForSeconds(m_transistionTime);
         MainMenuController.Instance.ShowMainMenu();
         SceneManager.UnloadSceneAsync(buildIndex);
-        sceneLoaderAnimator.SetTrigger("StartScene" + transistionNumer);
+        sceneLoaderAnimator.SetTrigger("StartScene" + transistionNumber);
     }
 }
